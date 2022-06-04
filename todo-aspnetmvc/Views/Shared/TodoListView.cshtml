@@ -1,0 +1,24 @@
+﻿@model TodoListModel
+
+<div class="card shadow p-2 mb-2 rounded bg-info rounded-pill text-whit m-1 ">
+    <div class="container row p-1 align-items-center pt-2">
+        <h2 class="col-4 card-title text-center">
+            @Model.Title
+        </h2>
+        <div class="col-4 badge badge-warning">
+            <h6 class="pt-2">Creation Date: @(Model.CreatedAt.ToString("dd/MM/yy HH:mm"))</h6>
+        </div>
+
+        <span class="col-4 d-flex justify-content-center ">
+            <a class="btn btn-info btn-outline-warning text-light font-weight-bold m-1" asp-controller="Home" asp-action="Details" asp-route-id="@Model.Id">
+                Details
+            </a>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">
+            <input type="submit" onclick="return confirm('Item will be deleted.')" value="Delete" class="btn btn-info btn-outline-danger text-light font-weight-bold m-1" />
+        </form>
+            <a class="btn btn-info btn-outline-success text-light font-weight-bold m-1" asp-controller="Home" asp-action="Copy" asp-route-id="@Model.Id">
+                Copy
+            </a>
+        </span>
+    </div>
+</div>

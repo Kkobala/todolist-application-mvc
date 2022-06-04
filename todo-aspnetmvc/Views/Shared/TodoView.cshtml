@@ -1,0 +1,24 @@
+﻿@model TodoListModel
+
+<div class="card border-light bg-secondary text-white m-3 p-3">
+    <div class="panel panel-default">
+        <div class="panel-heading card-title h1">@Model.Title</div>
+    </div>
+    <div class="card-text p-2">
+        <div class="panel-body badge badge-warning float-left mr-2 ">
+            <p class="form-text align-middle h6 pt-1">Creation Date: @(Model.CreatedAt.ToString("dd/MM/yy HH:mm"))</p>
+        </div>
+        <div class="panel-body badge badge-success ">
+            <p class="form-text align-middle h6 pt-1">Due Date: @Model.TodoDateTime()</p>
+        </div>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">
+            <input type="submit" onclick="return confirm('Item will be deleted.')" value="Delete" class="btn btn-danger btn-sm btn-outline-danger text-light font-weight-bold float-right m-1" />
+        </form>
+        <a class="btn btn-secondary btn-outline-light text-dark bg-light btn-sm pull-right float-right h6 m-1" asp-controller="Home" asp-action="Details" asp-route-id="@Model.Id">
+            Details
+        </a>
+        <a class="btn btn-sucess btn-outline-light btn-sm pull-right float-right h6 m-1" asp-controller="Home" asp-action="Update" asp-route-id="@Model.Id">
+            Edit
+        </a>
+    </div>
+</div>

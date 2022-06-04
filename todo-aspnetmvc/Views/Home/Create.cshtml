@@ -1,0 +1,42 @@
+﻿@using TodoList_Application
+@model TodoListModel
+
+<form method="post" enctype="multipart/form-data" asp-action="Create" asp-controller="Home">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="text-light">
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" required />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" required></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="form-control" asp-items="@Html.GetEnumSelectList<TodoStatus>()" required>
+                <option value="">Please select status</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DueDate"></label>
+            <input asp-for="DueDate" class="form-control" />
+            <span asp-validation-for="DueDate" class="text-danger"></span>
+        </div>
+        
+            <input type="hidden" asp-for="Id" value="@ViewBag.ListId" />
+            <input type="hidden" asp-for="Id" value="0"/>
+
+        <div class="form-group">
+            <input type="submit" value="Add" class="btn btn-primary bg-dark btn-outline-light text-light font-weight-bold m-1" />
+            <a class="btn btn-info btn-sm pull-right float-right m-1" asp-controller="Home" asp-action="Details" asp-route-id="@ViewBag.ListId">Back</a>
+        </div>
+    </div>
+</form>

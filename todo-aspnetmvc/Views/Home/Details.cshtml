@@ -1,0 +1,52 @@
+﻿@model todo_aspnetmvc.Models.TodoListModel
+
+<div class="card border-0 bg-dark text-white m-1 p-1">
+    <h3 class="card-title display-4">Title: @Model.Title</h3>
+    <div class="bg-faded p-1">
+    </div>
+    <div class="bg-faded p-1">
+        <h4>
+            Creation Date: @Model.CreatedAt
+        </h4>
+    </div>
+    <div class="bg-faded p-1">
+        <h4>
+            Visibility: @Model.Visibility()
+        </h4>
+    </div>
+    <div class="m-2 p-1">
+        <a class="btn btn-primary bg-dark btn-outline-light text-light font-weight-bold float-left m-1" asp-controller="Home" asp-action="Create" asp-route-listid="@Model.Id">Add Todo</a>
+        <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">
+            <input type="submit" onclick="return confirm('Item will be deleted.')" value="Delete" class="btn bg-danger btn-outline-light text-light font-weight-bold float-right m-1" />
+        </form>
+        <a class="btn btn-secondary btn-outline-light font-weight-bold float-right m-1" asp-controller="Home" asp-action="Index">Back</a>
+        <a class="btn btn-outline-light float-right font-weight-bold m-1" asp-controller="Home" asp-action="Update" asp-route-id="@Model.Id">Edit</a>
+    </div>
+    <h3> To Do's</h3>
+    @{
+        var text = "Hide Completed";
+        var textDueToday = "Show Due Today";
+        if (Model.HideCompleted)
+        {
+            text = "Show Completed";
+
+        }
+        if (Model.DueToday)
+        {
+            textDueToday = "Show All";
+        }
+
+        <a class="btn btn-outline-light float-right font-weight-bold m-1" 
+        asp-controller="Home" asp-action="Details" 
+        asp-route-id="@Model.Id" asp-route-hidecompleted="@(!Model.HideCompleted)" 
+        asp-route-duetoday="@Model.DueToday">@text</a>
+        <a class="btn btn-outline-light float-right font-weight-bold m-1" 
+        asp-controller="Home" asp-action="Details" 
+        asp-route-id="@Model.Id" asp-route-hidecompleted="@Model.HideCompleted" 
+        asp-route-duetoday="@(!Model.DueToday)">@textDueToday</a>
+
+    }
+
+
+    <vc:todos id="@Model.Id" hide-completed="@Model.HideCompleted" due-today="@Model.DueToday" />
+</div>
