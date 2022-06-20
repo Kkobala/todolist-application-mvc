@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace TodoList_Application.UnitOfWork
 {
-    public interface IUnitofWork<T> where T : class
+    public interface IUnitofWork
     {
-        public ITodoListRepository<T> TodoLists { get; }
+        public ITodoListRepository TodoLists { get; }
 
         public Task Complete();
     }

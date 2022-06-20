@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 
 namespace TodoList_Application.UnitOfWork
 {
-    public class UnitofWork<T> : IUnitofWork<T> where T : class
+    public class UnitofWork : IUnitofWork
     {
-        public UnitofWork(ITodoListRepository<T> todoListRepository)
+        public UnitofWork(ITodoListRepository todoListRepository)
         {
             TodoLists = todoListRepository;
         }
 
-        public ITodoListRepository<T> TodoLists { get; private set; }
+        public ITodoListRepository TodoLists { get; private set; }
+
 
         public async Task Complete()
         {

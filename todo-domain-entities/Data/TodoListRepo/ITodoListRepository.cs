@@ -5,19 +5,26 @@ using System.Threading.Tasks;
 
 namespace TodoList_Application
 {
-    public interface ITodoListRepository<T>
+    public interface ITodoListRepository
     {
-        Task<T> GetById(int id);
+        public Task<TodoList> GetById(int id);
 
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> Find(Expression<Func<T, bool>> expression);
+        public Task<IEnumerable<TodoList>> GetAllAsync();
 
-        Task Add(T entity);
+        public Task<IEnumerable<TodoList>> GetFilteredTodoLists(bool showDueToday, bool hideCompleted);
 
-        Task Remove(T entity);
+        public Task<IEnumerable<TodoList>> GetNotStartedToDoLists();
 
-        Task Update(T entity);
+        public Task<IEnumerable<TodoList>> Find(Expression<Func<TodoList, bool>> expression);
 
-        Task SaveChangesAsync();
+        public Task Add(TodoList entity);
+
+        public Task Remove(TodoList entity);
+
+        public Task Update(TodoList entity);
+
+        public Task SetReminderVisibility(List<TodoList> todoList, bool isVisible);
+
+        public Task SaveChangesAsync();
     }
 }

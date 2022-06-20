@@ -17,13 +17,14 @@ namespace todo_aspnetmvc.Mappers
                 DueDate = todoList.DueDate,
                 CreatedAt = todoList.CreationDate,
                 Status = todoList.Status,
-                IsVisible = todoList.IsVisible
+                IsVisible = todoList.IsVisible,
+                IsVisibleReminder = todoList.IsVisibleReminder,
             };
         }
 
-        public static IEnumerable<TodoListModel> ListOfToDoListsDomainToClientModel(this IEnumerable<TodoList> todos)
+        public static IEnumerable<TodoListModel> ListOfToDoListsDomainToClientModel(this IEnumerable<TodoList> enumer)
         {
-            return todos.Select(x => x.ToDoListDomainToClientModel());
+            return enumer.Select(x => x.ToDoListDomainToClientModel());
         }
     }
 }

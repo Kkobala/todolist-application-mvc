@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using todo_aspnetmvc;
 using TodoList_Application;
 
 namespace todo_aspnetmvc.Models
 {
-    public class TodoListModel
+    public class TodoListModel 
     {
         public int Id { get; set; }
 
@@ -18,31 +17,24 @@ namespace todo_aspnetmvc.Models
         [Required, Display(Name = "Visibility")]
         public bool IsVisible { get; set; } = true;
 
-        //[DisplayName("Last Changed")]
-        //public DateTime LastModifiedDate { get; set; } = DateTime.Now; // es
-
-
         [DisplayName("Created in")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        [Display(Name = "Hide Completed ToDo's")]
-        public bool HideCompleted { get; set; }
-
-        [Display(Name = "Show ToDo's Due Today")]
-        public bool DueToday { get; set; }
-
         [MaxLength(300)]
-        public string Description { get; set; } // es 
+        public string Description { get; set; }  
 
         [Display(Name = "Status of Todo List")]
-        public TodoStatus Status { get; set; } // es
+        public TodoStatus Status { get; set; } 
 
         [Display(Name = "Due Date")]
-        public DateTime? DueDate { get; set; } // es
+        [DataType(DataType.DateTime)]
+        public DateTime DueDate { get; set; }
+
+        public bool IsVisibleReminder { get; set; }
 
         public string TodoDateTime()
         {
-            return DueDate.HasValue ? DueDate.Value.ToString("dd/MM/yy HH:mm") : "Date isn't Selected Yed";
+            return  DueDate.ToString("dd/MM/yy HH:mm");
         }
 
         public string Visibility()

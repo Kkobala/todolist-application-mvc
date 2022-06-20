@@ -16,8 +16,9 @@ namespace todo_aspnetmvc.Mappers
                 IsVisible = todoListModel.IsVisible,
                 CreationDate = todoListModel.CreatedAt,
                 Description = todoListModel.Description,
-                DueDate = todoListModel.DueDate.HasValue ? todoListModel.DueDate.Value : todoListModel.DueDate,
-                Status = todoListModel.Status
+                DueDate = todoListModel.DueDate,
+                Status = todoListModel.Status,
+                IsVisibleReminder = todoListModel.IsVisibleReminder
             };
         }
 

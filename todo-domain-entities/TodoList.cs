@@ -13,9 +13,7 @@ namespace TodoList_Application
         public string Title { get; set; }
 
         [DisplayName("Created in")]
-        public DateTime CreationDate { get; set; } = DateTime.Now;
-
-        //public bool Finished { get; set; }
+        public DateTime CreationDate { get; set; }
 
         public bool IsVisible { get; set; }
 
@@ -23,10 +21,13 @@ namespace TodoList_Application
 
         public string Description { get; set; }
 
-        public DateTime? DueDate { get; set; }
+        public DateTime DueDate { get; set; }
 
+        public bool IsVisibleReminder { get; set; }
 
-        //[DisplayName("Last Changed")]
-        //public DateTime LastModifiedDate { get; set; } = DateTime.Now;
+        public override string ToString()
+        {
+            return $"Id: {Id,-5}\nTitle: {Title,-15}\nIsVisible:{IsVisible}";
+        }
     }
 }

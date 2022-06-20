@@ -21,4 +21,14 @@
             </a>
         </span>
     </div>
+    @if(Model.IsVisibleReminder)
+    {
+         var timeLeft = DateTime.Now - Model.DueDate;
+
+        var daysText = timeLeft.Days == 1 ? "Day" : "Days";
+
+        <div>
+            <span>There is left @timeLeft.Days @daysText till Due Date</span>
+        </div>
+    }
 </div>

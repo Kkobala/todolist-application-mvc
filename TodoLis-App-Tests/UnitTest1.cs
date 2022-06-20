@@ -13,13 +13,13 @@ namespace TodoLis_App_Tests
 {
     public class Tests
     {
-        private Mock<IUnitofWork<TodoList>> mock;
+        private Mock<IUnitofWork> mock;
         private Mock<ILogger<HomeController>> mockWork;
 
         [SetUp]
         public void Setup()
         {
-            mock = new Mock<IUnitofWork<TodoList>>();
+            mock = new Mock<IUnitofWork>();
             mockWork = new Mock<ILogger<HomeController>>();
         }
 
@@ -27,7 +27,7 @@ namespace TodoLis_App_Tests
         public void Index_Returns_ViewResult_With_TodoList()
         {
             // Arrange
-            mock.Setup(repo => repo.TodoLists.GetAllAsync().Result)
+            mock.Setup(repo => repo.TodoLists.GetFilteredTodoLists(It.IsAny<bool>(), It.IsAny<bool>()).Result)
                 .Returns(GetTestTodoLists());
 
             var controller = new HomeController(mockWork.Object, mock.Object);
@@ -36,7 +36,7 @@ namespace TodoLis_App_Tests
 
             //Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.TypeOf<ViewResult>());
-            mock.Verify(repo => repo.TodoLists.GetAllAsync(), Times.Exactly(1));
+            mock.Verify(repo => repo.TodoLists.GetFilteredTodoLists(It.IsAny<bool>(), It.IsAny<bool>()), Times.Exactly(1));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace TodoLis_App_Tests
             var controller = new HomeController(mockWork.Object, mock.Object);
 
             // Act
-            var result = controller.Details(id, It.IsAny<bool>(), It.IsAny<bool>()).Result;
+            var result = controller.Details(id).Result;
 
             // Assert
             Assert.That(result, Is.TypeOf<ViewResult>());
@@ -68,7 +68,7 @@ namespace TodoLis_App_Tests
             var controller = new HomeController(mockWork.Object, mock.Object);
 
             // Act
-            var result = controller.Details(id, It.IsAny<bool>(), It.IsAny<bool>()).Result;
+            var result = controller.Details(id).Result;
 
             // Assert
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
@@ -107,6 +107,21 @@ namespace TodoLis_App_Tests
             // Assert
             Assert.That(result, Is.TypeOf<RedirectToActionResult>());
             mock.Verify(x => x.TodoLists.GetById(It.IsAny<int>()), Times.Exactly(0));
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void Copy_Returns_RedirectToActionResult_If_Model_With_Id_Was_Not_Found_Repository_Method_Is_Called(int id)
+        {
+            mock.Setup(repo => repo.TodoLists.GetById(It.IsAny<int>()).Result)
+                    .Returns((TodoList)null);
+            var controller = new HomeController(mockWork.Object, mock.Object);
+
+            var result = controller.Copy(id).Result;
+
+            Assert.That(result, Is.TypeOf<RedirectToActionResult>());
+            mock.Verify(x => x.TodoLists.GetById(It.IsAny<int>()), Times.Exactly(1));
         }
 
         private List<TodoList> GetTestTodoLists()

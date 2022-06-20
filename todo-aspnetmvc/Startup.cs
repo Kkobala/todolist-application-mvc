@@ -27,8 +27,8 @@ namespace todo_aspnetmvc
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
             ));
 
-            services.AddScoped<IUnitofWork<TodoList>, UnitofWork<TodoList>>();
-            services.AddScoped<ITodoListRepository<TodoList>, TodoListRepository<TodoList>>();
+            services.AddScoped<IUnitofWork, UnitofWork>();
+            services.AddScoped<ITodoListRepository, TodoListRepository>();
 
             services.AddControllersWithViews();
             services.AddDistributedMemoryCache();
@@ -47,8 +47,6 @@ namespace todo_aspnetmvc
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            
 
             app.UseHttpsRedirection();
 

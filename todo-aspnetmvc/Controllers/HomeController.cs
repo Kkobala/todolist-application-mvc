@@ -1,17 +1,11 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using todo_aspnetmvc.Models;
-using todo_aspnetmvc;
-using TodoList_Application;
-using Microsoft.AspNetCore.Http;
 using todo_aspnetmvc.Mappers;
+using todo_aspnetmvc.Models;
 using TodoList_Application.UnitOfWork;
 
 namespace todo_aspnetmvc.Controllers
@@ -19,33 +13,32 @@ namespace todo_aspnetmvc.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IUnitofWork<TodoList> _unitofWork;
+        private readonly IUnitofWork _unitofWork;
 
         public HomeController(ILogger<HomeController> logger,
-            IUnitofWork<TodoList> unitofWork)
+            IUnitofWork unitofWork)
         {
             _logger = logger;
             _unitofWork = unitofWork;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(bool showDueToday = false, bool hideCompleted = false)
         {
-            var todoList = await _unitofWork.TodoLists.GetAllAsync();
+            var todoList = await _unitofWork.TodoLists.GetFilteredTodoLists(showDueToday, hideCompleted);
 
             _logger.LogInformation($"All items are accepted. Controller{nameof(Index)}");
 
-            if(todoList == default)
+            if (todoList == default)
                 return RedirectToAction(nameof(Error), new { statusCode = StatusCodes.Status404NotFound });
 
             return View(todoList.Where(x => x.IsVisible).ListOfToDoListsDomainToClientModel());
         }
 
-        public async Task<ActionResult> Details(int id, bool hideCompleted, bool dueDate)
+        public async Task<ActionResult> Details(int id)
         {
             if (id <= 0)
             {
                 _logger.LogError($"Id:{id} was invalid (was less than zero)." +
-                    $"Also parameters hideCompleted:{hideCompleted} dueDate:{dueDate}. " +
                     $"Controller{nameof(Details)}");
 
                 return RedirectToAction(nameof(Error), new { statusCode = StatusCodes.Status404NotFound });
@@ -56,19 +49,16 @@ namespace todo_aspnetmvc.Controllers
             if (todoList == null)
             {
                 _logger.LogError($"Id:{id} was not found." +
-                   $"Also parameters hideCompleted:{hideCompleted} dueDate:{dueDate}. " +
                    $"Controller{nameof(Details)}");
 
                 return RedirectToAction(nameof(Error), new { statusCode = StatusCodes.Status404NotFound });
             }
 
             _logger.LogError($"Id:{id} was found." +
-                   $"Also parameters hideCompleted:{hideCompleted} dueDate:{dueDate}. " +
                    $"Controller{nameof(Details)}");
 
             var toDoListViewModel = todoList.ToDoListDomainToClientModel();
-            toDoListViewModel.HideCompleted = hideCompleted;
-            toDoListViewModel.DueToday = dueDate;
+            toDoListViewModel.IsVisibleReminder = todoList.IsVisibleReminder;
 
             return View(toDoListViewModel);
         }
@@ -134,7 +124,7 @@ namespace todo_aspnetmvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<RedirectToActionResult> Update(TodoListModel list)
         {
-            if ( list == null || list.Id <= 0 || ModelState.IsValid)
+            if (list == null || list.Id <= 0 || ModelState.IsValid)
             {
                 _logger.LogError($"Id:{list.Id}, item or ModelState was invalid.{ModelState.IsValid}. Controller{nameof(Update)}");
 
@@ -196,6 +186,29 @@ namespace todo_aspnetmvc.Controllers
 
                 return RedirectToAction(nameof(Error), new { StatusCode = StatusCodes.Status404NotFound });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Copy(int id)
+        {
+            var toDolist = await _unitofWork.TodoLists.GetById(id);
+            
+            if (toDolist != default)
+            {
+                var copiedToDolist = new TodoListModel()
+                {
+                    Description = toDolist.Description,
+                    DueDate = toDolist.DueDate,
+                    IsVisible = toDolist.IsVisible,
+                    IsVisibleReminder = toDolist.IsVisibleReminder,
+                    Status = toDolist.Status,
+                    Title = toDolist.Title,
+                };
+
+                return RedirectToAction(nameof(Create), new { list = copiedToDolist });
+            }
+
+            return RedirectToAction(nameof(Error), new { StatusCode = StatusCodes.Status404NotFound });
         }
 
         public IActionResult Privacy()
